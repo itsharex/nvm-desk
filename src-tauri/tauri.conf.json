@@ -3,8 +3,7 @@
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
     "devPath": "http://localhost:1420",
-    "distDir": "../dist",
-    "withGlobalTauri": false
+    "distDir": "../dist"
   },
   "package": {
     "productName": "nvm-desk",
@@ -18,8 +17,10 @@
     "allowlist": {
       "all": true,
       "fs": {
-        "all": true,
-        "scope": ["$APPDATA/Roadming/nvm"]
+        "all": true
+      },
+      "notification": {
+        "all": true
       },
       "shell": {
         "all": true,
@@ -30,12 +31,19 @@
           {
             "name": "nvm-ls",
             "cmd": "nvm",
-            "args": ["ls"]
+            "args": [
+              "ls"
+            ]
           },
           {
             "name": "nvm-apply",
             "cmd": "nvm",
-            "args": ["use", {"validator": "\\S+"}]
+            "args": [
+              "use",
+              {
+                "validator": "\\S+"
+              }
+            ]
           },
           {
             "name": "nvm-install",
@@ -47,15 +55,14 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.tauri.dev",
+      "identifier": "com.dev.kdydesign",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
         "icons/128x128@2x.png",
         "icons/icon.icns",
         "icons/icon.ico"
-      ],
-      "resources": ["install"]
+      ]
     },
     "security": {
       "csp": null
@@ -63,8 +70,8 @@
     "windows": [
       {
         "fullscreen": false,
-        "resizable": true,
-        "title": "nvm-dest",
+        "resizable": false,
+        "title": "nvm-desk",
         "width": 450,
         "height": 450
       }

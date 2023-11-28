@@ -22,51 +22,51 @@ const getNodeListFilter = computed<string []>(() => {
 })
 
 async function getNodeList() {
-  nodeList.value = [
-    'v20.0.0*',
-    'v19.0.0',
-    'v18.0.0',
-    'v17.0.0',
-    'v16.0.0',
-    'v15.0.0',
-    'v14.0.0',
-    'v13.0.0'
-  ]
+  // nodeList.value = [
+  //   'v20.0.0*',
+  //   'v19.0.0',
+  //   'v18.0.0',
+  //   'v17.0.0',
+  //   'v16.0.0',
+  //   'v15.0.0',
+  //   'v14.0.0',
+  //   'v13.0.0'
+  // ]
 
   emit('update:loader', false)
-  // let permissionGranted = await isPermissionGranted();
-  //
-  // if (!permissionGranted) {
-  //   const permission = await requestPermission();
-  //   permissionGranted = permission === 'granted'
-  // }
-  //
-  // nodeList.value = []
-  //
-  // emit('update:loader', true)
-  //
-  // const command: any = await new Command('nvm-ls', ['ls'])
-  // await command.spawn()
-  //
-  // command.on('close', (data: string): void => {
-  //   info(data)
-  //   emit('update:loader', false)
-  // })
-  //
-  // command.stdout.on('data', (line: string): void => {
-  //   if (line !== '') {
-  //     nodeList.value.push(line)
-  //
-  //     if (line.indexOf('*') > -1) {
-  //       if (permissionGranted) {
-  //         sendNotification({
-  //           title: 'Node.js 현재 버전',
-  //           body: `${line.trim()}`
-  //         })
-  //       }
-  //     }
-  //   }
-  // })
+  let permissionGranted = await isPermissionGranted();
+
+  if (!permissionGranted) {
+    const permission = await requestPermission();
+    permissionGranted = permission === 'granted'
+  }
+
+  nodeList.value = []
+
+  emit('update:loader', true)
+
+  const command: any = await new Command('nvm-ls', ['ls'])
+  await command.spawn()
+
+  command.on('close', (data: string): void => {
+    info(data)
+    emit('update:loader', false)
+  })
+
+  command.stdout.on('data', (line: string): void => {
+    if (line !== '') {
+      nodeList.value.push(line)
+
+      if (line.indexOf('*') > -1) {
+        if (permissionGranted) {
+          sendNotification({
+            title: 'Node.js 현재 버전',
+            body: `${line.trim()}`
+          })
+        }
+      }
+    }
+  })
 }
 
 async function onApplyNode(version: string) {
@@ -90,7 +90,7 @@ async function onApplyNode(version: string) {
       })
     }
 
-    // getNodeList()
+    getNodeList()
   })
 }
 

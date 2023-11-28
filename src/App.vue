@@ -20,39 +20,45 @@ async function onInstallNVM() {
   </Teleport>
 
   <div class="container">
-    <h1>NVM-DESK</h1>
-    <pre>v0.0.1</pre>
-
-    <div style="margin-bottom:10px">
-      <div style="margin-bottom:10px">
-        <button @click="onInstallNVM"
-                style="background-color: #1dd5ff85">
-          NVM 설치
-        </button>
-      </div>
-
+    <div class="row content-row pad15">
       <div>
-        <button>
-        </button>
+        <span class="title">NVM</span>
+        <span class="space"></span>
+        <span class="sub-title">desk</span>
       </div>
+
+      <span class="sub-title">v0.0.1</span>
     </div>
 
     <hr/>
 
-    <NodeList v-model:loader="isLoading"/>
+    <div class="row content-row pad15">
+      <span class="sub-title">Current Version</span>
+      <span class="sub-title current-version">v18.0.0</span>
+    </div>
 
-    <div>
-      kdydesign
+    <hr/>
+
+<!--    <div style="margin-bottom:10px">-->
+<!--      <div style="margin-bottom:10px">-->
+<!--        <button @click="onInstallNVM"-->
+<!--                style="background-color: #1dd5ff85">-->
+<!--          NVM 설치-->
+<!--        </button>-->
+<!--      </div>-->
+<!--    </div>-->
+
+    <div class="row">
+      <NodeList v-model:loader="isLoading"/>
+    </div>
+
+    <div class="main-footer">
+      <div>
+        MIT License
+      </div>
+      <div>
+        Copyright © 2023 Dev.DY
+      </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.logo.vite:hover {
-  filter: drop-shadow(0 0 2em #747bff);
-}
-
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #249b73);
-}
-</style>

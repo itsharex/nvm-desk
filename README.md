@@ -13,5 +13,5 @@ Currently, only the `Windows` version is supported.
 MIT License
 
 ## Contributors
-Developer: <kdydesign@gmail.com>
-Product Designer: <ynlvhy@gmail.com>
+* Developer: <kdydesign@gmail.com>
+* Product Designer: <ynlvhy@gmail.com>

@@ -103,26 +103,33 @@ getNodeList()
 
 <template>
   <div
-      class="marT10"
-      style="width: 100%;">
-    <div style="text-align: left;">Node.js Version List</div>
+    class="marT10"
+    style="width: 100%;"
+  >
+    <div style="text-align: left;">
+      Node.js Version List
+    </div>
 
     <div class="node-container marT10">
       <div class="row">
         <input
-            v-model="searchVersion"
-            placeholder="search version"
-            style="width:100%"/>
+          v-model="searchVersion"
+          placeholder="search version"
+          style="width:100%"
+        >
       </div>
 
       <div class="node-box">
         <div
-            v-for="node in getNodeListFilter"
-            class="row content-row node-pad">
+          v-for="node in getNodeListFilter"
+          :key="node"
+          class="row content-row node-pad"
+        >
           {{ node }}
           <button
-              @click="onApplyNode(node)"
-              :class="['node', {current: getCurrent(node)}]">
+            :class="['node', {current: getCurrent(node)}]"
+            @click="onApplyNode(node)"
+          >
             use
           </button>
         </div>

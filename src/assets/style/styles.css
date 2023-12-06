@@ -1,151 +1,118 @@
-:root {
-    font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-    font-size: 16px;
-    line-height: 24px;
-    font-weight: 400;
 
-    color: #0f0f0f;
-    background-color: #f6f6f6;
 
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-text-size-adjust: 100%;
-}
 
-* {
-    box-sizing: border-box
-}
 
-.container {
-    margin: 15px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-}
 
-.marT10 {
-    margin-top: 10px;
-}
 
-.node-container {
-    border: 1px solid red;
-    border-radius: 10px;
-}
 
-.node-box {
-    height: 252px;
-    overflow-y: scroll;
-}
+/*.row {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*}*/
 
-.row {
-    display: flex;
-    justify-content: center;
-}
+/*.content-row {*/
+/*    justify-content: space-between;*/
+/*    align-items: center;*/
+/*}*/
 
-.content-row {
-    justify-content: space-between;
-    align-items: center;
-}
+/*.pad15 {*/
+/*    padding: 15px*/
+/*}*/
 
-.pad15 {
-    padding: 15px
-}
+/*.node-pad {*/
+/*    padding: 10px 15px 10px 15px;*/
+/*}*/
 
-.node-pad {
-    padding: 10px 15px 10px 15px;
-}
+/*input,*/
+/*button {*/
+/*    border-radius: 8px;*/
+/*    border: 1px solid transparent;*/
+/*    padding: 0.6em 1.2em;*/
+/*    font-size: 1em;*/
+/*    font-weight: 500;*/
+/*    font-family: inherit;*/
+/*    color: #0f0f0f;*/
+/*    background-color: #ffffff;*/
+/*    transition: border-color 0.25s;*/
+/*    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);*/
+/*}*/
 
-input,
-button {
-    border-radius: 8px;
-    border: 1px solid transparent;
-    padding: 0.6em 1.2em;
-    font-size: 1em;
-    font-weight: 500;
-    font-family: inherit;
-    color: #0f0f0f;
-    background-color: #ffffff;
-    transition: border-color 0.25s;
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
-}
+/*input {*/
+/*    margin: 10px 15px 10px 15px*/
+/*}*/
 
-input {
-    margin: 10px 15px 10px 15px
-}
+/*.title {*/
+/*    font-size: 40px;*/
+/*    font-weight: bold;*/
+/*    font-style: italic;*/
+/*}*/
 
-.title {
-    font-size: 40px;
-    font-weight: bold;
-    font-style: italic;
-}
+/*.sub-title {*/
+/*    font-size: 20px;*/
+/*}*/
 
-.sub-title {
-    font-size: 20px;
-}
+/*.current-version {*/
+/*    font-weight: bold;*/
+/*}*/
 
-.current-version {
-    font-weight: bold;
-}
+/*hr {*/
+/*    width: 100%*/
+/*}*/
 
-hr {
-    width: 100%
-}
+/*.space {*/
+/*    margin-left: 30px;*/
+/*}*/
 
-.space {
-    margin-left: 30px;
-}
+/*button {*/
+/*    cursor: pointer;*/
+/*}*/
 
-button {
-    cursor: pointer;
-}
+/*button:hover {*/
+/*    border-color: #396cd8;*/
+/*}*/
 
-button:hover {
-    border-color: #396cd8;
-}
+/*button:active {*/
+/*    border-color: #396cd8;*/
+/*    background-color: #e8e8e8;*/
+/*}*/
 
-button:active {
-    border-color: #396cd8;
-    background-color: #e8e8e8;
-}
+/*input,*/
+/*button {*/
+/*    outline: none;*/
+/*}*/
 
-input,
-button {
-    outline: none;
-}
+/*#greet-input {*/
+/*    margin-right: 5px;*/
+/*}*/
 
-#greet-input {
-    margin-right: 5px;
-}
+/*@media (prefers-color-scheme: dark) {*/
+/*    :root {*/
+/*        color: #f6f6f6;*/
+/*        background-color: #2f2f2f;*/
+/*    }*/
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        color: #f6f6f6;
-        background-color: #2f2f2f;
-    }
+/*    a:hover {*/
+/*        color: #24c8db;*/
+/*    }*/
 
-    a:hover {
-        color: #24c8db;
-    }
+/*    input,*/
+/*    button {*/
+/*        color: #ffffff;*/
+/*        background-color: #0f0f0f98;*/
+/*    }*/
 
-    input,
-    button {
-        color: #ffffff;
-        background-color: #0f0f0f98;
-    }
+/*    button:active {*/
+/*        background-color: #0f0f0f69;*/
+/*    }*/
+/*}*/
 
-    button:active {
-        background-color: #0f0f0f69;
-    }
-}
+/*.main-footer {*/
+/*    position: fixed;*/
+/*    bottom: 20px;*/
+/*    left: 0;*/
+/*    right: 0;*/
+/*    font-size: 14px;*/
+/*}*/
 
-.main-footer {
-    position: fixed;
-    bottom: 20px;
-    left: 0;
-    right: 0;
-    font-size: 14px;
-}
+
 

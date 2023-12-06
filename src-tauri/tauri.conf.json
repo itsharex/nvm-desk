@@ -16,6 +16,9 @@
     },
     "allowlist": {
       "all": true,
+      "os": {
+        "all": true
+      },
       "fs": {
         "all": true
       },

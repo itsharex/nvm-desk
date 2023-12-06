@@ -14,6 +14,8 @@ module.exports = {
   ],
   rules: {
     '@typescript-eslint/no-explicit-any': 0,
-    '@typescript-eslint/ban-types': 0
+    '@typescript-eslint/ban-types': 0,
+
+    'vue/multi-word-component-names': 0
   }
 }

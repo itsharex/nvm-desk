@@ -114,28 +114,33 @@ async function runCommand(cmd: string, args: string []) {
 async function getInstalledData() {
   const command = await runCommand('nvm-ls', ['ls'])
 
-  command.on('close', (data: string): void => {
+  command.on('close', (data: string) => {
     info(data)
     // emit('update:loader', false)
   })
 
-  command.stdout.on('data', (line: string): void => {
-    if (line !== '') {
+  command.stdout.on('data', async (line: string) => {
+    if (line.trim() !== '') {
+      const version = line.match(/\d+(\.\d+)+/g)?.join('')
+
       rows.value.push({
-        ver: line,
+        ver: version as string,
         release_date: '1',
-        use: 1,
+        use: line.includes('*') ? 1 : 0,
         uninstall: 1
       })
 
       if (line.indexOf('*') > -1) {
-        if (permissionGranted()) {
+        if (await permissionGranted()) {
           sendNotification({
             title: 'Node.js 현재 버전',
             body: `${ line.trim() }`
           })
         }
       }
+
+      progressUseBtn.value.push(false)
+      progressUninstallBtn.value.push(false)
     }
   })
 
@@ -240,6 +245,8 @@ function getFuncBtnStyle(col: string) {
     row-key="ver"
     :rows="filterData"
     :columns="columns"
+    bordered
+    flat
     class="sticky-table"
   >
     <template #body="props">
@@ -262,7 +269,7 @@ function getFuncBtnStyle(col: string) {
             :icon="getFuncBtnStyle(col.field).icon"
             :color="getFuncBtnStyle(col.field).color"
             :loading="isLoading(col.field, props.pageIndex)"
-            :disable="isDisable(col.field, props.pageIndex)"
+            :disable="isDisable(col.field, props.pageIndex) || props.row.use === 1"
             align="around"
             style="width: 110px"
             @click="onApply(col.field, props.row, props.pageIndex)"

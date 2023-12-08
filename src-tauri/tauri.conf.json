@@ -72,10 +72,11 @@
     },
     "windows": [
       {
+        "decorations": false,
         "fullscreen": false,
         "resizable": false,
         "title": "nvm-desk",
-        "width": 450,
+        "width": 750,
         "height": 450
       }
     ]

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, type Ref } from 'vue'
+import { appWindow } from '@tauri-apps/api/window'
 
 import ToolTip from '../ToolTip.vue'
 
@@ -19,6 +20,14 @@ const searchText: Ref<string> = ref('')
 function onChangeTab() {
   emit('update:tab', menuTab.value)
 }
+
+function onWinClose() {
+  appWindow.close()
+}
+
+function onWinMinimize() {
+  appWindow.minimize()
+}
 </script>
 
 <template>
@@ -26,7 +35,10 @@ function onChangeTab() {
     bordered
     class="row bg-white text-black"
   >
-    <q-toolbar class="top-tools col top-tools">
+    <q-toolbar
+      data-tauri-drag-region
+      class="top-tools col top-tools"
+    >
       <div class="window-btn">
         <q-btn
           round
@@ -35,6 +47,7 @@ function onChangeTab() {
           size="xs"
           icon="close"
           class="close-btn"
+          @click="onWinClose"
         >
           <tool-tip text="Close" />
         </q-btn>
@@ -46,6 +59,7 @@ function onChangeTab() {
           size="xs"
           icon="remove"
           class="minimize-btn"
+          @click="onWinMinimize"
         >
           <tool-tip text="Minimize" />
         </q-btn>
@@ -70,13 +84,19 @@ function onChangeTab() {
       </q-tabs>
     </q-toolbar>
 
-    <q-toolbar class="top-tools col justify-center">
+    <q-toolbar
+      data-tauri-drag-region
+      class="top-tools col justify-center"
+    >
       <div>
         <q-img src="src/assets/img/icon.png" />
       </div>
     </q-toolbar>
 
-    <q-toolbar class="top-tools col justify-between">
+    <q-toolbar
+      data-tauri-drag-region
+      class="top-tools col justify-between"
+    >
       <q-input
         v-model="searchText"
         rounded

@@ -2,7 +2,7 @@
 
 use tauri::Manager;
 use tauri::{ CustomMenuItem, SystemTray, SystemTrayEvent, SystemTrayMenu };
-use tauri_plugin_log::LogTarget;
+use tauri_plugin_log::{LogTarget};
 
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -49,7 +49,7 @@ fn main() {
             }
             SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
                 "quit" => {
-                    std::process::exit();
+                    std::process::exit(0);
                 }
                 _ => {}
             },

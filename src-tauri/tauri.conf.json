@@ -42,7 +42,9 @@
             "name": "nvm-apply",
             "cmd": "nvm",
             "args": [
-              "use",
+              {
+                "validator": "\\S+"
+              },
               {
                 "validator": "\\S+"
               }
@@ -77,7 +79,7 @@
         "resizable": false,
         "title": "nvm-desk",
         "width": 750,
-        "height": 450
+        "height": 494
       }
     ]
   }

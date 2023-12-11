@@ -201,7 +201,7 @@ async function getArchiveData() {
   const res = await fetch('https://nodejs.org/dist/index.json')
   const nodeList = await res.json()
 
-  rows.value = nodeList.map(node => {
+  rows.value.archiveData = nodeList.map(node => {
     return {
       ver: node.version,
       release_date: node.date,

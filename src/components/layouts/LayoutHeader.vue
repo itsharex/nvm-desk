@@ -37,7 +37,8 @@ function onWinMinimize() {
   >
     <q-toolbar
       data-tauri-drag-region
-      class="top-tools col top-tools"
+      class="top-tools col-4"
+      style="z-index: 1"
     >
       <div class="window-btn">
         <q-btn
@@ -86,7 +87,7 @@ function onWinMinimize() {
 
     <q-toolbar
       data-tauri-drag-region
-      class="top-tools col justify-center"
+      class="top-tools col-4 justify-center"
     >
       <div>
         <q-img src="src/assets/img/icon.png" />
@@ -95,7 +96,7 @@ function onWinMinimize() {
 
     <q-toolbar
       data-tauri-drag-region
-      class="top-tools col justify-between"
+      class="top-tools col-4 justify-between"
     >
       <q-input
         v-model="searchText"

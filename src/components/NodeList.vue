@@ -5,7 +5,9 @@ import { isPermissionGranted, requestPermission, sendNotification } from '@tauri
 import { Command } from '@tauri-apps/api/shell'
 import { info } from 'tauri-plugin-log-api'
 
-import type { Column, Rows } from '../types'
+import type { Column, Data } from '../types'
+
+import TableLoader from './TableLoader.vue'
 
 const props = defineProps<{
   tab: string,
@@ -67,19 +69,29 @@ const archiveCols: Column[] = [
   },
 ]
 const columns: Ref<Column []> = ref([])
-const rows: Rows = ref([])
+const rows: Data = ref({
+  installedData: [],
+  archiveData: []
+})
 const progressUseBtn: Ref<boolean []> = ref([])
 const progressUninstallBtn: Ref<boolean []> = ref([])
+const progressInstallBtn: Ref<boolean []> = ref([])
 const isDisableBtn: Ref<boolean> = ref(false)
+const isLoader: Ref<boolean> = ref(false)
+
+const isInstalledTab = computed(() => props.tab === 'installed')
 
 const filterData = computed(() => {
-  return rows.value.filter(row => row.ver.includes(props.searchKeyword))
+  const dataList = isInstalledTab.value ? rows.value.installedData : rows.value.archiveData
+
+  return dataList.filter(row => row.ver.includes(props.searchKeyword))
 })
 
 watch(() => props.tab, () => {
-  rows.value = []
+  rows.value.installedData = []
+  rows.value.archiveData = []
 
-  if (props.tab === 'installed') {
+  if (isInstalledTab.value) {
     columns.value = installedCols
     getInstalledData()
   } else {
@@ -90,8 +102,14 @@ watch(() => props.tab, () => {
 
 onBeforeMount(async () => {
   columns.value = installedCols
-  getInstalledData()
+
+  await getArchiveData()
+  await getInstalledData()
 })
+
+function onLoad() {
+  isLoader.value = !isLoader.value
+}
 
 async function permissionGranted() {
   let permissionGranted = await isPermissionGranted()
@@ -111,23 +129,27 @@ async function runCommand(cmd: string, args: string []) {
   return command
 }
 
-async function getInstalledData() {
-  const command = await runCommand('nvm-ls', ['ls'])
+function getReleaseDate (version: string) {
+  const matchData =  rows.value.archiveData.filter(data => data.ver.includes(version))
 
-  command.on('close', (data: string) => {
-    info(data)
-    // emit('update:loader', false)
-  })
+  return matchData[0].release_date
+}
+
+async function getInstalledData() {
+  onLoad()
+
+  const command = await runCommand('nvm-ls', ['ls'])
 
   command.stdout.on('data', async (line: string) => {
     if (line.trim() !== '') {
       const version = line.match(/\d+(\.\d+)+/g)?.join('')
 
-      rows.value.push({
+      rows.value.installedData.push({
         ver: version as string,
-        release_date: '1',
+        release_date: getReleaseDate(version),
         use: line.includes('*') ? 1 : 0,
-        uninstall: 1
+        uninstall: 1,
+        type: 1
       })
 
       if (line.indexOf('*') > -1) {
@@ -144,27 +166,24 @@ async function getInstalledData() {
     }
   })
 
-  for (let i = 0; i < 10; i++) {
-    rows.value.push({
-      ver: `1.1.${ i }`,
-      release_date: '11' + i,
-      use: 1,
-      uninstall: 1
-    })
-
-    progressUseBtn.value.push(false)
-    progressUninstallBtn.value.push(false)
-  }
+  command.on('close', (data: string) => {
+    info(data)
+    onLoad()
+  })
 }
 
-function getArchiveData() {
-  for (let i = 0; i < 10; i++) {
-    rows.value.push({
-      ver: `10.1.${ i }`,
-      release_date: '11' + i,
-      install: 1
-    })
-  }
+async function getArchiveData() {
+  const {json} = await fetch('https://nodejs.org/dist/index.json')
+  const nodeList = await json()
+
+  rows.value = nodeList.map(node => {
+    return {
+      ver: node.version,
+      release_date: node.date,
+      install: 1,
+      type: 2
+    }
+  })
 }
 
 async function onApply(col: string, row: any, idx: number) {
@@ -174,23 +193,22 @@ async function onApply(col: string, row: any, idx: number) {
     isDisableBtn.value = true
     progressUseBtn.value[idx] = true
 
-    console.log(version, idx, progressUseBtn)
-    // const command = await runCommand('nvm-apply', ['use', version.trim()])
-    //
-    // command.on('close', (line: string): void => {
-    // isDisableBtn.value = false
-    // progressUseBtn.value[idx] = false
-    //   info(line)
-    //
-    //   if (permissionGranted()) {
-    //     sendNotification({
-    //       title: 'node.js 버전',
-    //       body: `${ version.trim() }`
-    //     })
-    //   }
-    //
-    //   getInstalledData()
-    // })
+    const command = await runCommand('nvm-apply', ['use', version.trim()])
+
+    command.on('close', (line: string) => {
+      isDisableBtn.value = false
+      progressUseBtn.value[idx] = false
+      info(line)
+
+      if (permissionGranted()) {
+        sendNotification({
+          title: 'node.js 버전',
+          body: `${ version.trim() }`
+        })
+      }
+
+      getInstalledData()
+    })
   }
 
   if (col === 'uninstall') {
@@ -198,12 +216,39 @@ async function onApply(col: string, row: any, idx: number) {
   }
 
   if (col === 'install') {
-    alert('install')
+    isDisableBtn.value = true
+    progressInstallBtn.value[idx] = true
+
+    const command = await runCommand('nvm-apply', ['install', version.trim()])
+
+    command.stdout.on('data', async (line: string) => {
+      console.log(line)
+    })
+
+    command.stderr.on('data', async (line: string) => {
+      console.log(line)
+    })
+
+    command.on('close', (line: string) => {
+      isDisableBtn.value = false
+      progressInstallBtn.value[idx] = false
+      console.log(line)
+    })
   }
 }
 
 function isLoading(col: string, idx: number) {
-  return col === 'use' ? progressUseBtn.value[idx] : progressUninstallBtn.value[idx]
+  if (col === 'use') {
+    return progressUseBtn.value[idx]
+  }
+
+  if (col === 'uninstall') {
+    return progressUninstallBtn.value[idx]
+  }
+
+  if (col === 'install') {
+    return progressInstallBtn.value[idx]
+  }
 }
 
 function isDisable(col: string, idx: number) {
@@ -247,8 +292,13 @@ function getFuncBtnStyle(col: string) {
     :columns="columns"
     bordered
     flat
+    :loading="isLoader"
     class="sticky-table"
   >
+    <template #loading>
+      <table-loader />
+    </template>
+
     <template #body="props">
       <q-tr :props="props">
         <q-td

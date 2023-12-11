@@ -11,7 +11,8 @@ export interface Column {
 
 interface Row {
     ver: string
-    release_date: string
+    release_date: string,
+    type: number
 }
 
 interface InstallRow extends Row {
@@ -24,3 +25,6 @@ interface ArchiveRow extends Row {
 }
 
 export type Rows = Ref<(InstallRow | ArchiveRow)[]>
+
+export type Data = Ref<{ installedData: InstallRow [], archiveData: ArchiveRow [] }>
+

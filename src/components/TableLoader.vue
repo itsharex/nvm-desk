@@ -1,0 +1,59 @@
+<template>
+  <q-markup-table
+    separator="none"
+    flat
+    class="table-loader"
+  >
+    <tbody>
+      <tr
+        v-for="n in 7"
+        :key="n"
+      >
+        <td
+          class="text-center"
+          width="196px"
+        >
+          <q-skeleton
+            animation="blink"
+            type="text"
+            width="100px"
+            height="30px"
+          />
+        </td>
+        <td
+          class="text-center"
+          width="266px"
+        >
+          <q-skeleton
+            animation="blink"
+            type="text"
+            width="100px"
+            height="30px"
+          />
+        </td>
+        <td
+          class="text-center"
+          width="115px"
+        >
+          <q-skeleton
+            animation="blink"
+            type="QBtn"
+            height="25px"
+          />
+        </td>
+        <td
+          class="text-center"
+          width="169px"
+        >
+          <q-skeleton
+            animation="blink"
+            type="QBtn"
+            height="25px"
+          />
+        </td>
+      </tr>
+    </tbody>
+  </q-markup-table>
+</template>
+<script setup lang="ts">
+</script>

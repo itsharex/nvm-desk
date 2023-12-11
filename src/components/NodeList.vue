@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, ref, watch, type Ref } from 'vue'
+import { computed, onBeforeMount, ref, watch, type Ref, nextTick } from 'vue'
 
 import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/api/notification'
 import { Command } from '@tauri-apps/api/shell'
@@ -12,6 +12,12 @@ import TableLoader from './TableLoader.vue'
 const props = defineProps<{
   tab: string,
   searchKeyword: string
+}>()
+
+const emit = defineEmits<{
+  'is-show-log': [value: boolean],
+  'update-logs': [value: string],
+  'current-version': [value: string]
 }>()
 
 const installedCols: Column[] = [
@@ -81,31 +87,47 @@ const isLoader: Ref<boolean> = ref(false)
 
 const isInstalledTab = computed(() => props.tab === 'installed')
 
+const filterArchiveData = computed(() => rows.value.archiveData.filter(row => row.install === 1))
+
 const filterData = computed(() => {
-  const dataList = isInstalledTab.value ? rows.value.installedData : rows.value.archiveData
+  const dataList = isInstalledTab.value ? rows.value.installedData : filterArchiveData.value
 
   return dataList.filter(row => row.ver.includes(props.searchKeyword))
 })
 
 watch(() => props.tab, () => {
-  rows.value.installedData = []
-  rows.value.archiveData = []
+  // rows.value.installedData = []
+  // rows.value.archiveData = []
 
   if (isInstalledTab.value) {
     columns.value = installedCols
-    getInstalledData()
+    // getInstalledData()
   } else {
     columns.value = archiveCols
-    getArchiveData()
+    // getArchiveData()
   }
 })
 
 onBeforeMount(async () => {
+  onLoad()
+
   columns.value = installedCols
 
   await getArchiveData()
   await getInstalledData()
 })
+
+async function reLoad() {
+  onLoad()
+
+  rows.value.installedData = []
+  rows.value.archiveData = []
+
+  await nextTick()
+
+  await getArchiveData()
+  await getInstalledData()
+}
 
 function onLoad() {
   isLoader.value = !isLoader.value
@@ -129,34 +151,37 @@ async function runCommand(cmd: string, args: string []) {
   return command
 }
 
-function getReleaseDate (version: string) {
-  const matchData =  rows.value.archiveData.filter(data => data.ver.includes(version))
+function getReleaseDate(version: string) {
+  const matchData = rows.value.archiveData.filter(data => data.ver.includes(version))
 
   return matchData[0].release_date
 }
 
 async function getInstalledData() {
-  onLoad()
-
   const command = await runCommand('nvm-ls', ['ls'])
+  rows.value.installedData = []
 
   command.stdout.on('data', async (line: string) => {
     if (line.trim() !== '') {
-      const version = line.match(/\d+(\.\d+)+/g)?.join('')
+      const version = `v${ line.match(/\d+(\.\d+)+/g)?.join('') }`
 
       rows.value.installedData.push({
-        ver: version as string,
+        ver: version,
         release_date: getReleaseDate(version),
         use: line.includes('*') ? 1 : 0,
         uninstall: 1,
         type: 1
       })
 
+      updateArchiveData(version)
+
       if (line.indexOf('*') > -1) {
         if (await permissionGranted()) {
+          emit('current-version', version)
+
           sendNotification({
-            title: 'Node.js 현재 버전',
-            body: `${ line.trim() }`
+            title: 'Node.js Current Version',
+            body: version
           })
         }
       }
@@ -173,8 +198,8 @@ async function getInstalledData() {
 }
 
 async function getArchiveData() {
-  const {json} = await fetch('https://nodejs.org/dist/index.json')
-  const nodeList = await json()
+  const res = await fetch('https://nodejs.org/dist/index.json')
+  const nodeList = await res.json()
 
   rows.value = nodeList.map(node => {
     return {
@@ -183,6 +208,18 @@ async function getArchiveData() {
       install: 1,
       type: 2
     }
+  })
+}
+
+function updateArchiveData(version: string) {
+  rows.value.archiveData = rows.value.archiveData.map(node => {
+    if (node.ver.includes(version)) {
+      node = Object.assign(node, {
+        install: 2
+      })
+    }
+
+    return node
   })
 }
 
@@ -216,23 +253,27 @@ async function onApply(col: string, row: any, idx: number) {
   }
 
   if (col === 'install') {
+    emit('is-show-log', true)
+
     isDisableBtn.value = true
     progressInstallBtn.value[idx] = true
 
     const command = await runCommand('nvm-apply', ['install', version.trim()])
 
     command.stdout.on('data', async (line: string) => {
-      console.log(line)
+      emit('update-logs', line)
     })
 
     command.stderr.on('data', async (line: string) => {
-      console.log(line)
+      emit('update-logs', line)
     })
 
-    command.on('close', (line: string) => {
+    command.on('close', async () => {
       isDisableBtn.value = false
       progressInstallBtn.value[idx] = false
-      console.log(line)
+
+      await reLoad()
+      emit('is-show-log', false)
     })
   }
 }
@@ -265,18 +306,18 @@ function getColWidth(col: string) {
 
 function getFuncBtnStyle(col: string) {
   if (col === 'use') {
-    return {icon: 'arrow_circle_up', color: 'light-blue-14'}
+    return { icon: 'arrow_circle_up', color: 'light-blue-14' }
   }
 
   if (col === 'uninstall') {
-    return {icon: 'remove_circle_outline', color: 'deep-orange-9'}
+    return { icon: 'remove_circle_outline', color: 'deep-orange-9' }
   }
 
   if (col === 'install') {
-    return {icon: 'downloading', color: 'yellow-9'}
+    return { icon: 'downloading', color: 'yellow-9' }
   }
 
-  return {icon: '', color: ''}
+  return { icon: '', color: '' }
 }
 </script>
 

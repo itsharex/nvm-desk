@@ -6,7 +6,7 @@
   >
     <tbody>
       <tr
-        v-for="n in 7"
+        v-for="n in 8"
         :key="n"
       >
         <td

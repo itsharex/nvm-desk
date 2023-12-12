@@ -43,7 +43,10 @@ function onUpdateLogs(val: string) {
       <div class="col">
         <div class="row justify-end current-text">
           <span>Current Version: </span>
-          <span v-if="currentVersion !== ''">{{ currentVersion }}</span>
+          <span
+            v-if="currentVersion !== ''"
+            class="text-white "
+          >{{ currentVersion }}</span>
           <span v-else>
             <q-skeleton
               animation="blink"

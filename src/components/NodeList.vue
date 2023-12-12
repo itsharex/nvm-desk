@@ -2,6 +2,7 @@
 import { computed, onBeforeMount, ref, watch, type Ref, nextTick } from 'vue'
 
 import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/api/notification'
+import { platform as Platform } from '@tauri-apps/api/os'
 import { Command } from '@tauri-apps/api/shell'
 import { info } from 'tauri-plugin-log-api'
 
@@ -16,6 +17,7 @@ const props = defineProps<{
   searchKeyword: string
 }>()
 
+const osRef: Ref<string> = ref('')
 const emit = defineEmits<{
   'is-show-log': [value: boolean],
   'update-logs': [value: string],
@@ -113,6 +115,8 @@ watch(() => props.tab, () => {
 onBeforeMount(async () => {
   onLoad()
 
+  osRef.value = await Platform()
+
   columns.value = installedCols
 
   await getArchiveData()
@@ -160,7 +164,7 @@ function getReleaseDate(version: string) {
 }
 
 async function getInstalledData() {
-  if (__DEV__) {
+  if (__DEV__ && osRef.value !== 'win32') {
     rows.value.installedData = []
 
     for (let i = 0; i < 10; i++) {

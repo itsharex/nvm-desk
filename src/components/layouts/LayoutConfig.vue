@@ -67,7 +67,7 @@ function onChangeTheme (val) {
             v-model="themeMode"
             size="sm"
             checked-icon="dark_mode"
-            color="grey-9"
+            color="brand"
             unchecked-icon="light_mode"
             @update:model-value="onChangeTheme"
           />

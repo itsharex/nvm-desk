@@ -1,5 +1,17 @@
+$app-base: #fe7f76
+$dark-base: #1d1d1d
 $close-btn-color: #ff6057
 $minimize-btn-color: #febc2e
+$copyright-color: #a2a2a2
+$light-header: #e3e3e3
+$dark-header: #0a0a0a
+
+@import "./custom-dark.sass"
+
+.text-brand
+  color: $app-base !important
+.bg-brand
+  background-color: $app-base !important
 
 //:root
 //  font-family: Inter, Avenir, Helvetica, Arial, sans-serif
@@ -28,7 +40,7 @@ body
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th
-    background-color: #e8e8e8
+    background-color: $light-header
 
   thead tr th
     position: sticky
@@ -67,8 +79,7 @@ body
     margin-left: 20px
 
   .q-img
-    height: 20px
-    width: 20px
+    width: 30px
 
   .q-field
     .q-field__control
@@ -94,4 +105,25 @@ footer
     resize: none
     width: 100%
     height: 200px
+
+.config-panel
+  .config-title
+    align-items: center
+    padding: 10px
+  .config-body
+    padding: 10px
+    a
+      &:link, &:visited, &:hover, &:active
+        color: black
+      i.q-icon
+        margin-left: 10px
+    > .row
+      margin-top: 10px
+      align-items: center
+  .config-footer
+    position: fixed
+    width: 100%
+    bottom: 0
+    font-size: 12px
+    color: $copyright-color
 

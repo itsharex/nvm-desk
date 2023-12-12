@@ -8,7 +8,7 @@ const props = defineProps<{
   <q-tooltip
     transition-show="scale"
     transition-hide="scale"
-    class="bg-red-5"
+    class="bg-brand"
   >
     {{ props.text }}
   </q-tooltip>

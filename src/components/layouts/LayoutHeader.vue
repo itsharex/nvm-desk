@@ -70,8 +70,8 @@ function onWinMinimize() {
         v-model="menuTab"
         dense
         inline-label
-        active-color="red"
-        indicator-color="red"
+        active-color="brand"
+        indicator-color="brand"
         @update:model-value="onChangeTab"
       >
         <q-tab
@@ -90,7 +90,7 @@ function onWinMinimize() {
       class="top-tools col-4 justify-center"
     >
       <div>
-        <q-img src="src/assets/img/icon.png" />
+        <q-img src="src/assets/img/nvm-desk-logo.png" />
       </div>
     </q-toolbar>
 
@@ -103,6 +103,7 @@ function onWinMinimize() {
         rounded
         outlined
         dense
+        color="brand"
         placeholder="Search..."
         @update:model-value="(val: any) => emit('input-search', val)"
       />

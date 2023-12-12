@@ -9,6 +9,8 @@ import type { Column, Data } from '../types'
 
 import TableLoader from './TableLoader.vue'
 
+const __DEV__ = import.meta.env.DEV
+
 const props = defineProps<{
   tab: string,
   searchKeyword: string
@@ -158,6 +160,29 @@ function getReleaseDate(version: string) {
 }
 
 async function getInstalledData() {
+  if (__DEV__) {
+    rows.value.installedData = []
+
+    for (let i = 0; i < 10; i++) {
+      rows.value.installedData.push({
+        ver: `v21.4.0`,
+        release_date: getReleaseDate(`v21.4.0`),
+        use: i === 0 ? 1 : 0,
+        uninstall: 1,
+        type: 1
+      })
+
+      updateArchiveData(`v21.4.0`)
+    }
+
+    progressUseBtn.value.push(false)
+    progressUninstallBtn.value.push(false)
+
+    onLoad()
+
+    return
+  }
+
   const command = await runCommand('nvm-ls', ['ls'])
   rows.value.installedData = []
 

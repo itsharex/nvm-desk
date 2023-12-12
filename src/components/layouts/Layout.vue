@@ -45,7 +45,7 @@ function onUpdateLogs(val: string) {
           <span>Current Version: </span>
           <span
             v-if="currentVersion !== ''"
-            class="text-white "
+            class="text-brand"
           >{{ currentVersion }}</span>
           <span v-else>
             <q-skeleton

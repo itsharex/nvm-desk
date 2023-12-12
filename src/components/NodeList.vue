@@ -10,8 +10,6 @@ import type { Column, Data } from '../types'
 
 import TableLoader from './TableLoader.vue'
 
-const __DEV__ = import.meta.env.DEV
-
 const props = defineProps<{
   tab: string,
   searchKeyword: string
@@ -164,7 +162,7 @@ function getReleaseDate(version: string) {
 }
 
 async function getInstalledData() {
-  if (__DEV__ && osRef.value !== 'win32') {
+  if (osRef.value !== 'win32') {
     rows.value.installedData = []
 
     for (let i = 0; i < 10; i++) {
@@ -228,9 +226,9 @@ async function getInstalledData() {
 
 async function getArchiveData() {
   const res = await fetch('https://nodejs.org/dist/index.json')
-  const nodeList = await res.json()
+  const nodeList: any = await res.json()
 
-  rows.value.archiveData = nodeList.map(node => {
+  rows.value.archiveData = nodeList.map((node: any) => {
     return {
       ver: node.version,
       release_date: node.date,
@@ -261,12 +259,12 @@ async function onApply(col: string, row: any, idx: number) {
 
     const command = await runCommand('nvm-apply', ['use', version.trim()])
 
-    command.on('close', (line: string) => {
+    command.on('close', async (line: string) => {
       isDisableBtn.value = false
       progressUseBtn.value[idx] = false
       info(line)
 
-      if (permissionGranted()) {
+      if (await permissionGranted()) {
         sendNotification({
           title: 'node.js 버전',
           body: `${ version.trim() }`

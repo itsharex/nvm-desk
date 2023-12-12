@@ -19,9 +19,7 @@ const getGithub = 'https://github.com/kdydesign/nvm-desk/issues'
 
 watch(isShow, v => isOpen.value = v)
 
-function onChangeTheme (val) {
-  console.log(val)
-
+function onChangeTheme (val:boolean) {
   Dark.set(val)
 }
 </script>

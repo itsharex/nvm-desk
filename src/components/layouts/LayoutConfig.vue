@@ -85,7 +85,10 @@ function onChangeTheme (val:boolean) {
             />
           </a>
 
-          <a :href="getGithub" target="_blank">
+          <a
+            :href="getGithub"
+            target="_blank"
+          >
             <q-icon
               name="fa-brands fa-github"
               size="sm"

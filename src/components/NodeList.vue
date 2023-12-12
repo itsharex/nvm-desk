@@ -271,7 +271,8 @@ async function onApply(col: string, row: any, idx: number) {
         })
       }
 
-      getInstalledData()
+      await getInstalledData()
+      onLoad()
     })
   }
 
@@ -358,7 +359,6 @@ function getFuncBtnStyle(col: string) {
     row-key="ver"
     :rows="filterData"
     :columns="columns"
-    bordered
     flat
     :loading="isLoader"
     class="sticky-table"

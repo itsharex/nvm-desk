@@ -90,7 +90,7 @@ function onWinMinimize() {
       class="top-tools col-4 justify-center"
     >
       <div>
-        <q-img src="src/assets/img/nvm-desk-logo.png" />
+        <q-img src="@/assets/img/nvm-desk-logo.png" />
       </div>
     </q-toolbar>
 

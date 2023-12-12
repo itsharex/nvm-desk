@@ -39,7 +39,7 @@ function onChangeTheme (val:boolean) {
     <div class="row config-title">
       <div class="col">
         <q-img
-          src="src/assets/img/nvm-desk-logo-text.png"
+          src="@/assets/img/nvm-desk-logo-text.png"
           width="150px"
         />
       </div>

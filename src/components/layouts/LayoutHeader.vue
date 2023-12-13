@@ -33,9 +33,8 @@ function onWinMinimize() {
     class="row bg-white text-black"
   >
     <q-toolbar
-      data-tauri-drag-region
       class="top-tools col-4"
-      style="z-index: 1"
+      style="-webkit-app-region: drag;z-index: 1"
     >
       <div class="window-btn">
         <q-btn
@@ -83,8 +82,8 @@ function onWinMinimize() {
     </q-toolbar>
 
     <q-toolbar
-      data-tauri-drag-region
       class="top-tools col-4 justify-center"
+      style="-webkit-app-region: drag"
     >
       <div>
         <q-img src="@/assets/img/nvm-desk-logo.png" />
@@ -92,8 +91,8 @@ function onWinMinimize() {
     </q-toolbar>
 
     <q-toolbar
-      data-tauri-drag-region
       class="top-tools col-4 justify-between"
+      style="-webkit-app-region: drag"
     >
       <q-input
         v-model="searchText"

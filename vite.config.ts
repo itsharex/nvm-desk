@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue'
 import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
 
 export default defineConfig(async () => ({
+    base: './',
     plugins: [
         vue({
             template: { transformAssetUrls }
@@ -15,7 +16,7 @@ export default defineConfig(async () => ({
     ],
     clearScreen: false,
     server: {
-        port: 1420,
+        port: 3000,
         strictPort: true,
     },
     resolve: {

@@ -1,16 +1,9 @@
 <script setup lang="ts">
-// import NodeList from "./components/NodeList.bak.vue";
-// import {Command} from "@tauri-apps/api/shell";
 import type {Ref} from "vue";
 import {ref} from "vue";
 import Layout from "./components/layouts/Layout.vue";
 
 const isLoading: Ref<boolean> = ref(false)
-
-// async function onInstallNVM() {
-//   const command = await new Command('nvm-install')
-//
-//   await command.execute()
 // }
 </script>
 

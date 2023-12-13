@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, type Ref } from 'vue'
-import { appWindow } from '@tauri-apps/api/window'
 
 import ToolTip from '../ToolTip.vue'
 
@@ -22,11 +21,9 @@ function onChangeTab() {
 }
 
 function onWinClose() {
-  appWindow.close()
 }
 
 function onWinMinimize() {
-  appWindow.minimize()
 }
 </script>
 

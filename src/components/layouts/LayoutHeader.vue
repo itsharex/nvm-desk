@@ -21,9 +21,12 @@ function onChangeTab() {
 }
 
 function onWinClose() {
+  console.log(window)
+  window.electronAPI.send('quit')
 }
 
 function onWinMinimize() {
+  window.electronAPI.send('minimize')
 }
 </script>
 
@@ -33,7 +36,7 @@ function onWinMinimize() {
     class="row bg-white text-black"
   >
     <q-toolbar
-      class="top-tools col-4"
+      class="top-tools col-header"
       style="-webkit-app-region: drag;z-index: 1"
     >
       <div class="window-btn">
@@ -44,6 +47,7 @@ function onWinMinimize() {
           size="xs"
           icon="close"
           class="close-btn"
+          style="-webkit-app-region: no-drag"
           @click="onWinClose"
         >
           <tool-tip text="Close" />
@@ -56,6 +60,7 @@ function onWinMinimize() {
           size="xs"
           icon="remove"
           class="minimize-btn"
+          style="-webkit-app-region: no-drag"
           @click="onWinMinimize"
         >
           <tool-tip text="Minimize" />
@@ -68,6 +73,7 @@ function onWinMinimize() {
         inline-label
         active-color="brand"
         indicator-color="brand"
+        style="-webkit-app-region: no-drag"
         @update:model-value="onChangeTab"
       >
         <q-tab
@@ -82,7 +88,7 @@ function onWinMinimize() {
     </q-toolbar>
 
     <q-toolbar
-      class="top-tools col-4 justify-center"
+      class="top-tools col-header-ico justify-center"
       style="-webkit-app-region: drag"
     >
       <div>
@@ -91,7 +97,7 @@ function onWinMinimize() {
     </q-toolbar>
 
     <q-toolbar
-      class="top-tools col-4 justify-between"
+      class="top-tools col-header justify-between"
       style="-webkit-app-region: drag"
     >
       <q-input
@@ -101,6 +107,7 @@ function onWinMinimize() {
         dense
         color="brand"
         placeholder="Search..."
+        style="-webkit-app-region: no-drag"
         @update:model-value="(val: any) => emit('input-search', val)"
       />
 
@@ -111,6 +118,7 @@ function onWinMinimize() {
         icon="settings"
         size="sm"
         text-color="grey-10"
+        style="-webkit-app-region: no-drag"
         @click="$emit('is-config-show', true)"
       >
         <tool-tip text="Settings" />

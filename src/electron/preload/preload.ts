@@ -12,5 +12,19 @@ window.addEventListener('DOMContentLoaded', () => {
 })
 
 contextBridge.exposeInMainWorld('electronAPI', {
-    openFile: () => ipcRenderer.invoke('dialog:openFile')
+    send: (channel: any, data: any) => {
+        const validChannels = ['quit', 'minimize']
+
+        if (validChannels.includes(channel)) {
+            ipcRenderer.send(channel, data)
+        }
+    },
+    receive: (channel: any, func: any) => {
+        const validChannels = ['test']
+
+        if (validChannels.includes(channel)) {
+            ipcRenderer.on(channel, (event, ...args) => func(event, ...args))
+        }
+    }
+    // openFile: () => ipcRenderer.invoke('dialog:openFile')
 })

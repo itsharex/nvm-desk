@@ -26,6 +26,8 @@ body
   .q-table__bottom,
   thead tr:first-child th
     background-color: $light-header
+    font-size: 14px
+    font-weight: bold
 
   thead tr th
     position: sticky
@@ -39,6 +41,7 @@ body
 
   tbody
     scroll-margin-top: 48px
+    color: $body-font-color
 
 
 .top-tools
@@ -66,6 +69,8 @@ body
 
   .q-tabs
     margin-left: 20px
+    .q-tab__label
+      font-weight: bold
 
   .q-img
     width: 30px
@@ -73,6 +78,10 @@ body
   .q-field
     .q-field__control
       height: 28px
+      &:hover:before
+       border-color: #505050
+    input::placeholder
+      color: $body-font-color
 
 .table-loader
   position: absolute !important

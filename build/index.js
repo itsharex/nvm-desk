@@ -1,4 +1,4 @@
-import { build, Platform } from 'electron-builder'
+import { build } from 'electron-builder'
 import rimraf from 'rimraf'
 import { resolve } from 'node:path'
 
@@ -10,9 +10,8 @@ function cleanDist() {
 
 function run() {
     build({
-        targets: Platform.WINDOWS.createTarget(),
+        artifactName: '${productName}_${version}.${ext}',
         appId: 'com.nvm.desk',
-        asar: true,
         productName: 'nvm-desk',
         directories: {
             buildResources: 'assets',
@@ -27,20 +26,11 @@ function run() {
                 to: 'libs/nvm.exe'
             }
         ],
-        mac: {
-            artifactName: '${productName}_${version}.${ext}',
-            target: [
-                'dmg'
-            ]
-        },
         win: {
-            artifactName: '${productName}_${version}.${ext}',
             target: [
                 {
                     target: 'nsis',
-                    arch: [
-                        'x64'
-                    ]
+                    arch: ['x64']
                 }
             ]
         },

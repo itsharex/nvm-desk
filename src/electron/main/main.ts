@@ -1,15 +1,10 @@
 import { join } from 'node:path'
 import { spawn } from 'node:child_process'
-import {
-    app,
-    BrowserWindow,
-    ipcMain,
-} from 'electron'
+import { app, BrowserWindow, ipcMain, Notification, nativeImage, Menu, Tray } from 'electron'
 
 const isDev = process.env.npm_lifecycle_event === 'app:dev' ? true : false
 
 function createWindow() {
-    // Create the browser window.
     const mainWindow = new BrowserWindow({
         width: 750,
         height: 494,
@@ -20,9 +15,8 @@ function createWindow() {
         },
     })
 
-    // and load the index.html of the app.
     if (isDev) {
-        mainWindow.loadURL('http://localhost:3000')// Open the DevTools.
+        mainWindow.loadURL('http://localhost:3000')
         mainWindow.webContents.openDevTools()
     } else {
         mainWindow.loadFile(join(__dirname, '../../index.html'))
@@ -33,15 +27,26 @@ function createWindow() {
     })
 }
 
+function createTray() {
+    const icon = nativeImage.createFromPath(join(__dirname, 'src/img/icon16.ico'))
+    const tray = new Tray(icon)
+
+    const item: any = [
+        { label: '1' },
+        { type: 'separator' },
+        { label: 'Quit', click: () => app.exit() }
+    ]
+    const contextMenu = Menu.buildFromTemplate(item)
+
+    tray.setContextMenu(contextMenu)
+}
+
 app.whenReady().then(() => {
     createWindow()
+    createTray()
 
-    app.on('activate', function () {
-        if (BrowserWindow.getAllWindows().length === 0) createWindow()
-    })
-
-    ipcMain.on('quit', () =>  app.quit())
-    ipcMain.on('minimize', () =>app.hide())
+    ipcMain.on('quit', () => app.quit())
+    ipcMain.on('minimize', () => app.hide())
     ipcMain.on('runCommand', (evt: any, param: any) => {
         let result: string [] = []
 
@@ -56,14 +61,19 @@ app.whenReady().then(() => {
         const cmd = spawn(param.cmd, param.args)
 
         cmd.stdout.on('data', data => {
-            result = String(data).split('\n')
-            console.log('-> ', result)
+            if (param.args[0] === 'install') {
+                evt.reply('streamCommand', data)
+            } else {
+                result = String(data).split('\n')
+            }
         })
 
         cmd.stdout.on('end', () => {
-            evt.reply('resCommand', result)
+            evt.reply('resCommand', { result, os: process.platform })
         })
     })
+
+    ipcMain.on('showNotification', (_, param) => new Notification(...param).show())
 })
 
 app.on('window-all-closed', () => {

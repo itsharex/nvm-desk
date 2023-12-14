@@ -185,12 +185,11 @@ async function getInstalledData() {
 
         if (line.indexOf('*') > -1) {
           emit('current-version', version)
-          //
-          //   sendNotification({
-          //     title: 'Node.js Current Version',
-          //     body: version
-          //   })
-          // }
+
+          window.electronAPI.send('showNotification', {
+            title: 'Node.js Current Version',
+            body: version
+          })
         }
 
         progressUseBtn.value.push(false)
@@ -236,19 +235,18 @@ async function onApply(col: string, row: any, idx: number) {
     progressUseBtn.value[idx] = true
 
     window.electronAPI.send('runCommand', { cmd: 'nvm', args: ['use', version.trim()] })
+    window.electronAPI.receive('resCommand', async () => {
+      isDisableBtn.value = false
+      progressUseBtn.value[idx] = false
 
-    // command.on('close', async (line: string) => {
-    //   isDisableBtn.value = false
-    //   progressUseBtn.value[idx] = false
-    //
-    //     // sendNotification({
-    //     //   title: 'node.js 버전',
-    //     //   body: `${ version.trim() }`
-    //     // })
-    //
-    //   await getInstalledData()
-    //   onLoad()
-    // })
+      window.electronAPI.send('showNotification', {
+        title: 'node.js Version',
+        body: version
+      })
+
+      await getInstalledData()
+      onLoad()
+    })
   }
 
   if (col === 'uninstall') {
@@ -261,23 +259,17 @@ async function onApply(col: string, row: any, idx: number) {
     isDisableBtn.value = true
     progressInstallBtn.value[idx] = true
 
-    window.electronAPI.send('runCommand', { cmd: 'nvm', args: ['ls', version.trim()] })
+    window.electronAPI.send('runCommand', { cmd: 'nvm', args: ['install', version.trim()] })
+    window.electronAPI.receive('streamCommand', (evt, data) => {
+      emit('update-logs', data)
+    })
+    window.electronAPI.receive('resCommand', async () => {
+      isDisableBtn.value = false
+      progressInstallBtn.value[idx] = false
 
-    // command.stdout.on('data', async (line: string) => {
-    //   emit('update-logs', line)
-    // })
-    //
-    // command.stderr.on('data', async (line: string) => {
-    //   emit('update-logs', line)
-    // })
-    //
-    // command.on('close', async () => {
-    //   isDisableBtn.value = false
-    //   progressInstallBtn.value[idx] = false
-    //
-    //   await reLoad()
-    //   emit('is-show-log', false)
-    // })
+      await reLoad()
+      emit('is-show-log', false)
+    })
   }
 }
 

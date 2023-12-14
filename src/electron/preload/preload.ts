@@ -1,20 +1,9 @@
 import { contextBridge, ipcRenderer } from 'electron'
 
-window.addEventListener('DOMContentLoaded', () => {
-    const replaceText = (selector: any, text: any) => {
-        const element = document.getElementById(selector)
-        if (element) element.innerText = text
-    }
-
-    for (const dependency of ['chrome', 'node', 'electron']) {
-        replaceText(`${ dependency }-version`, process.versions[dependency])
-    }
-})
-
 contextBridge.exposeInMainWorld('electronAPI', {
     send: (channel: any, data: any) => {
         console.log(channel)
-        const validChannels = ['runCommand', 'quit', 'minimize']
+        const validChannels = ['runCommand', 'quit', 'minimize', 'showNotification']
 
         if (validChannels.includes(channel)) {
             ipcRenderer.send(channel, data)
@@ -27,5 +16,4 @@ contextBridge.exposeInMainWorld('electronAPI', {
             ipcRenderer.on(channel, (event, ...args) => func(event, ...args))
         }
     }
-    // openFile: () => ipcRenderer.invoke('dialog:openFile')
 })

@@ -13,14 +13,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
 contextBridge.exposeInMainWorld('electronAPI', {
     send: (channel: any, data: any) => {
-        const validChannels = ['quit', 'minimize']
+        console.log(channel)
+        const validChannels = ['runCommand', 'quit', 'minimize']
 
         if (validChannels.includes(channel)) {
             ipcRenderer.send(channel, data)
         }
     },
     receive: (channel: any, func: any) => {
-        const validChannels = ['test']
+        const validChannels = ['resCommand', 'setPlatform']
 
         if (validChannels.includes(channel)) {
             ipcRenderer.on(channel, (event, ...args) => func(event, ...args))

@@ -10,11 +10,11 @@ const props = defineProps<{
 }>()
 
 // const osRef: Ref<string> = ref('')
-// const emit = defineEmits<{
-//   'is-show-log': [value: boolean],
-//   'update-logs': [value: string],
-//   'current-version': [value: string]
-// }>()
+const emit = defineEmits<{
+  'is-show-log': [value: boolean],
+  'update-logs': [value: string],
+  'current-version': [value: string]
+}>()
 
 const installedCols: Column[] = [
   {
@@ -113,96 +113,93 @@ onBeforeMount(async () => {
   await getInstalledData()
 })
 
-// async function reLoad() {
-//   onLoad()
-//
-//   rows.value.installedData = []
-//   rows.value.archiveData = []
-//
-//   await nextTick()
-//
-//   await getArchiveData()
-//   await getInstalledData()
-// }
+async function reLoad() {
+  onLoad()
+
+  rows.value.installedData = []
+  rows.value.archiveData = []
+
+  await nextTick()
+
+  await getArchiveData()
+  await getInstalledData()
+}
 
 function onLoad() {
   isLoader.value = !isLoader.value
 }
 
-// async function permissionGranted() {
-//   return true
-// }
-//
-// async function runCommand() {
-// }
-//
-// function getReleaseDate(version: string) {
-//   const matchData = rows.value.archiveData.filter(data => data.ver.includes(version))
-//
-//   return matchData[0].release_date
-// }
+function getReleaseDate(version: string) {
+  const matchData = rows.value.archiveData.filter(data => data.ver.includes(version))
+
+  return matchData[0].release_date
+}
+
+function dummyData() {
+  rows.value.installedData = []
+
+  for (let i = 0; i < 10; i++) {
+    rows.value.installedData.push({
+      ver: `v21.4.0`,
+      release_date: getReleaseDate(`v21.4.0`),
+      use: i === 0 ? 1 : 0,
+      uninstall: 1,
+      type: 1
+    })
+
+    updateArchiveData(`v21.4.0`)
+  }
+
+  progressUseBtn.value.push(false)
+  progressUninstallBtn.value.push(false)
+
+  onLoad()
+}
+
 
 async function getInstalledData() {
-  // if (osRef.value !== 'win32') {
-  //   rows.value.installedData = []
-  //
-  //   for (let i = 0; i < 10; i++) {
-  //     rows.value.installedData.push({
-  //       ver: `v21.4.0`,
-  //       release_date: getReleaseDate(`v21.4.0`),
-  //       use: i === 0 ? 1 : 0,
-  //       uninstall: 1,
-  //       type: 1
-  //     })
-  //
-  //     updateArchiveData(`v21.4.0`)
-  //   }
-  //
-  //   progressUseBtn.value.push(false)
-  //   progressUninstallBtn.value.push(false)
-  //
-  //   onLoad()
-  //
-  //   return
-  // }
-  //
-  // const command = await runCommand('nvm-ls', ['ls'])
-  // rows.value.installedData = []
-  //
-  // command.stdout.on('data', async (line: string) => {
-  //   if (line.trim() !== '') {
-  //     const version = `v${ line.match(/\d+(\.\d+)+/g)?.join('') }`
-  //
-  //     rows.value.installedData.push({
-  //       ver: version,
-  //       release_date: getReleaseDate(version),
-  //       use: line.includes('*') ? 1 : 0,
-  //       uninstall: 1,
-  //       type: 1
-  //     })
-  //
-  //     updateArchiveData(version)
-  //
-  //     if (line.indexOf('*') > -1) {
-  //       if (await permissionGranted()) {
-  //         emit('current-version', version)
-  //
-  //         sendNotification({
-  //           title: 'Node.js Current Version',
-  //           body: version
-  //         })
-  //       }
-  //     }
-  //
-  //     progressUseBtn.value.push(false)
-  //     progressUninstallBtn.value.push(false)
-  //   }
-  // })
-  //
-  // command.on('close', (data: string) => {
-  //   info(data)
-  //   onLoad()
-  // })
+  window.electronAPI.send('runCommand', { cmd: 'nvm', args: ['ls'] })
+  window.electronAPI.receive('resCommand', (evt, { result, os }) => {
+    if (os === 'darwin') {
+      dummyData()
+      return
+    }
+
+    rows.value.installedData = []
+
+    for (let i = 0; i < result.length; i++) {
+      const line = result[i]
+
+      if (line.trim() !== '') {
+        const version = `v${ line.match(/\d+(\.\d+)+/g)?.join('') }`
+
+        rows.value.installedData.push({
+          ver: version,
+          release_date: getReleaseDate(version),
+          use: line.includes('*') ? 1 : 0,
+          uninstall: 1,
+          type: 1
+        })
+
+        updateArchiveData(version)
+
+        if (line.indexOf('*') > -1) {
+          emit('current-version', version)
+          //
+          //   sendNotification({
+          //     title: 'Node.js Current Version',
+          //     body: version
+          //   })
+          // }
+        }
+
+        progressUseBtn.value.push(false)
+        progressUninstallBtn.value.push(false)
+      }
+    }
+
+    onLoad()
+  })
 }
 
 async function getArchiveData() {
@@ -219,73 +216,71 @@ async function getArchiveData() {
   })
 }
 
-// function updateArchiveData(version: string) {
-//   rows.value.archiveData = rows.value.archiveData.map(node => {
-//     if (node.ver.includes(version)) {
-//       node = Object.assign(node, {
-//         install: 2
-//       })
-//     }
-//
-//     return node
-//   })
-// }
+function updateArchiveData(version: string) {
+  rows.value.archiveData = rows.value.archiveData.map(node => {
+    if (node.ver.includes(version)) {
+      node = Object.assign(node, {
+        install: 2
+      })
+    }
 
-// async function onApply() {
-  // const version = row.ver
-  //
-  // if (col === 'use') {
-  //   isDisableBtn.value = true
-  //   progressUseBtn.value[idx] = true
-  //
-  //   const command = await runCommand('nvm-apply', ['use', version.trim()])
-  //
-  //   command.on('close', async (line: string) => {
-  //     isDisableBtn.value = false
-  //     progressUseBtn.value[idx] = false
-  //     info(line)
-  //
-  //     if (await permissionGranted()) {
-  //       sendNotification({
-  //         title: 'node.js 버전',
-  //         body: `${ version.trim() }`
-  //       })
-  //     }
-  //
-  //     await getInstalledData()
-  //     onLoad()
-  //   })
-  // }
-  //
-  // if (col === 'uninstall') {
-  //   progressUninstallBtn.value[idx] = true
-  // }
-  //
-  // if (col === 'install') {
-  //   emit('is-show-log', true)
-  //
-  //   isDisableBtn.value = true
-  //   progressInstallBtn.value[idx] = true
-  //
-  //   const command = await runCommand('nvm-apply', ['install', version.trim()])
-  //
-  //   command.stdout.on('data', async (line: string) => {
-  //     emit('update-logs', line)
-  //   })
-  //
-  //   command.stderr.on('data', async (line: string) => {
-  //     emit('update-logs', line)
-  //   })
-  //
-  //   command.on('close', async () => {
-  //     isDisableBtn.value = false
-  //     progressInstallBtn.value[idx] = false
-  //
-  //     await reLoad()
-  //     emit('is-show-log', false)
-  //   })
-  // }
-// }
+    return node
+  })
+}
+
+async function onApply(col: string, row: any, idx: number) {
+  const version = row.ver
+
+  if (col === 'use') {
+    isDisableBtn.value = true
+    progressUseBtn.value[idx] = true
+
+    window.electronAPI.send('runCommand', { cmd: 'nvm', args: ['use', version.trim()] })
+
+    // command.on('close', async (line: string) => {
+    //   isDisableBtn.value = false
+    //   progressUseBtn.value[idx] = false
+    //
+    //     // sendNotification({
+    //     //   title: 'node.js 버전',
+    //     //   body: `${ version.trim() }`
+    //     // })
+    //
+    //   await getInstalledData()
+    //   onLoad()
+    // })
+  }
+
+  if (col === 'uninstall') {
+    progressUninstallBtn.value[idx] = true
+  }
+
+  if (col === 'install') {
+    emit('is-show-log', true)
+
+    isDisableBtn.value = true
+    progressInstallBtn.value[idx] = true
+
+    window.electronAPI.send('runCommand', { cmd: 'nvm', args: ['ls', version.trim()] })
+
+    // command.stdout.on('data', async (line: string) => {
+    //   emit('update-logs', line)
+    // })
+    //
+    // command.stderr.on('data', async (line: string) => {
+    //   emit('update-logs', line)
+    // })
+    //
+    // command.on('close', async () => {
+    //   isDisableBtn.value = false
+    //   progressInstallBtn.value[idx] = false
+    //
+    //   await reLoad()
+    //   emit('is-show-log', false)
+    // })
+  }
+}
+
 
 function isLoading(col: string, idx: number) {
   if (col === 'use') {
@@ -371,6 +366,7 @@ function getFuncBtnStyle(col: string) {
             :disable="isDisable(col.field, props.pageIndex) || props.row.use === 1"
             align="around"
             style="width: 110px"
+            @click="onApply(col.field, props.row, props.pageIndex)"
           >
             {{ col.label }}
             <template #loading>

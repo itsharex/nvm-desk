@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp, provide } from 'vue'
 import { Quasar } from 'quasar'
 
 import './assets/style/style.sass'
@@ -18,3 +18,8 @@ app.use(Quasar, {
 })
 
 app.mount('#app')
+
+
+window.electronAPI.receive('setPlatform', (evt, os) => {
+    app.config.globalProperties.$isDarwin = os === 'darwin'
+})

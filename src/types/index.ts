@@ -28,3 +28,7 @@ export type Rows = Ref<(InstallRow | ArchiveRow)[]>
 
 export type Data = Ref<{ installedData: InstallRow [], archiveData: ArchiveRow [] }>
 
+export interface Schema {
+    schemaVersion: string
+    config: object
+}

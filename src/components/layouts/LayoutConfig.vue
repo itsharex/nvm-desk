@@ -22,6 +22,10 @@ watch(isShow, v => isOpen.value = v)
 function onChangeTheme (val:boolean) {
   Dark.set(val)
 }
+
+window.electronAPI.receive('getConfig', (_, { config }) => {
+  onChangeTheme(config.dark)
+})
 </script>
 
 <template>

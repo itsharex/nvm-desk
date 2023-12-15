@@ -1,6 +1,7 @@
 import { join } from 'node:path'
 import { spawn } from 'node:child_process'
 import { app, BrowserWindow, ipcMain, Notification, nativeImage, Menu, Tray } from 'electron'
+import { createSchema, getSchema } from '../../utils/storage'
 
 const isDev = process.env.npm_lifecycle_event === 'app:dev' ? true : false
 
@@ -23,7 +24,11 @@ function createWindow() {
     }
 
     mainWindow.webContents.on('dom-ready', () => {
+        createSchema()
+        const config = getSchema()
+
         mainWindow.webContents.send('setPlatform', process.platform)
+        mainWindow.webContents.send('getConfig', config)
     })
 }
 

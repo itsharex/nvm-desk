@@ -1,4 +1,4 @@
-import { createApp, provide } from 'vue'
+import { createApp } from 'vue'
 import { Quasar } from 'quasar'
 
 import './assets/style/style.sass'

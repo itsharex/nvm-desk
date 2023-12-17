@@ -1,9 +1,6 @@
-import { build, Platform } from 'electron-builder'
-import {rimrafSync} from 'rimraf'
-import { resolve } from 'node:path'
-import {fileURLToPath} from 'node:url'
-
-const __dirname = fileURLToPath(new URL(".", import.meta.url))
+const {build, Platform} = require('electron-builder')
+const {rimrafSync} = require('rimraf')
+const {resolve} = require('path')
 
 function cleanDist() {
     rimrafSync(resolve(__dirname, '../release'))
@@ -37,7 +34,8 @@ function run() {
                         target: 'nsis',
                         arch: ['x64']
                     }
-                ]
+                ],
+                icon: './src/assets/img/favicon.ico'
             },
             nsis: {
                 oneClick: false,

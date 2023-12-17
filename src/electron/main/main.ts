@@ -12,6 +12,7 @@ function createWindow() {
         height: 494,
         frame: false,
         resizable: false,
+        icon: join(__dirname, '../icon/favicon.ico'),
         webPreferences: {
             preload: join(__dirname, '../preload/preload.js'),
         },

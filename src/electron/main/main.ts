@@ -1,7 +1,8 @@
-import { join } from 'node:path'
-import { spawn } from 'node:child_process'
-import { app, BrowserWindow, ipcMain, Notification, nativeImage, Menu, Tray } from 'electron'
-import { createSchema, getSchema } from '../../utils/storage'
+import {join} from 'node:path'
+
+import {spawn} from 'node:child_process'
+import {app, BrowserWindow, ipcMain, Notification, nativeImage, Menu, Tray} from 'electron'
+import {createSchema, getSchema, setSchema} from '../../utils/storage.js'
 
 const isDev = process.env.npm_lifecycle_event === 'app:dev' ? true : false
 
@@ -37,9 +38,9 @@ function createTray() {
     const tray = new Tray(icon)
 
     const item: any = [
-        { label: '1' },
-        { type: 'separator' },
-        { label: 'Quit', click: () => app.exit() }
+        {label: '1'},
+        {type: 'separator'},
+        {label: 'Quit', click: () => app.exit()}
     ]
     const contextMenu = Menu.buildFromTemplate(item)
 
@@ -59,7 +60,7 @@ app.whenReady().then(() => {
             for (let i = 0; i < 10; i++) {
                 result.push(`v21.4.0`)
             }
-            evt.reply('resCommand', { result, os: process.platform })
+            evt.reply('resCommand', {result, os: process.platform})
             return
         }
 
@@ -74,11 +75,15 @@ app.whenReady().then(() => {
         })
 
         cmd.stdout.on('end', () => {
-            evt.reply('resCommand', { result, os: process.platform })
+            evt.reply('resCommand', {result, os: process.platform})
         })
     })
 
-    ipcMain.on('showNotification', (_, param) => new Notification(...param).show())
+    ipcMain.on('setConfig', (_, config) => {
+        setSchema({config})
+    })
+
+    ipcMain.on('showNotification', (_, param) => new Notification(param).show())
 })
 
 app.on('window-all-closed', () => {

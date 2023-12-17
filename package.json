@@ -11,7 +11,7 @@
     "watch": "tsc -w",
     "lint": "eslint src --ext .vue,.ts --fix --ignore-path .gitignore",
     "app:dev": "tsc && concurrently vite \" electron .\" \"tsc -w\"",
-    "app:build": "npm run vite:build && tsc && node ./build/index.ts",
+    "app:build": "npm run vite:build && tsc && node ./build/index.js",
     "app:preview": "npm run vite:build && tsc && electron ."
   },
   "author": "",

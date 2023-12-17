@@ -18,6 +18,10 @@ export function createSchema() {
     if (!existsSync(dirPath)) {
         mkdirSync(dirPath)
     }
+
+    if (!existsSync(join(dirPath, fileName))) {
+        setSchema(defaultSchema)
+    }
 }
 
 export function getSchema() {
@@ -30,9 +34,10 @@ export function getSchema() {
     }
 }
 
-export function setSchema(schema = defaultSchema) {
+export function setSchema(schema: Schema) {
     try {
-        writeFileSync(join(dirPath, fileName), JSON.stringify(schema), 'utf8')
+        const mergeSchema = Object.assign(defaultSchema, schema)
+        writeFileSync(join(dirPath, fileName), JSON.stringify(mergeSchema), 'utf8')
     } catch (err) {
         console.error('[setSchema]: ', err)
     }

@@ -1,4 +1,4 @@
-![nvm-desk-logo](https://raw.githubusercontent.com/kdydesign/cdn/master/nvm-desk/logo/img/nvm-desk-bi-text.png)
+![nvm-desk-logo](https://raw.githubusercontent.com/kdydesign/cdn/master/nvm-desk/logo/img/nvm-desk-bi-text2.png)
 
 # NVM Desk
 > **NVM Desk** is an application that allows convenient usage of NVM on the desktop.

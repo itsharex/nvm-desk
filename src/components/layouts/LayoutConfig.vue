@@ -46,7 +46,7 @@ window.electronAPI.receive('getConfig', (_, { config }) => {
     <div class="row config-title">
       <div class="col">
         <q-img
-          src="@/assets/img/nvm-desk-logo-text.png"
+          src="@/assets/img/logo-text.png"
           width="150px"
         />
       </div>

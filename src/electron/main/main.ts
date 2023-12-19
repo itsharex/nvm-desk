@@ -1,8 +1,8 @@
-import {join} from 'node:path'
+import { join } from 'node:path'
 
-import {spawn} from 'node:child_process'
-import {app, BrowserWindow, ipcMain, Notification, nativeImage, Menu, Tray} from 'electron'
-import {createSchema, getSchema, setSchema} from '../../utils/storage.js'
+import { spawn } from 'node:child_process'
+import { app, BrowserWindow, ipcMain, Menu, nativeImage, Notification, Tray } from 'electron'
+import { createSchema, getSchema, setSchema } from '../../utils/storage.js'
 
 const isDev = process.env.npm_lifecycle_event === 'app:dev' ? true : false
 
@@ -12,7 +12,7 @@ function createWindow() {
         height: 494,
         frame: false,
         resizable: false,
-        icon: join(__dirname, '../icon/favicon.ico'),
+        icon: join(__dirname, '../../../src/assets/img/logo-256x256.png'),
         webPreferences: {
             preload: join(__dirname, '../preload/preload.js'),
         },
@@ -35,13 +35,13 @@ function createWindow() {
 }
 
 function createTray() {
-    const icon = nativeImage.createFromPath(join(__dirname, 'src/img/icon16.ico'))
+    const icon = nativeImage.createFromPath(join(__dirname, '../../../src/assets/img/logo-32x32.ico'))
     const tray = new Tray(icon)
 
     const item: any = [
-        {label: '1'},
-        {type: 'separator'},
-        {label: 'Quit', click: () => app.exit()}
+        { label: '1' },
+        { type: 'separator' },
+        { label: 'Quit', click: () => app.exit() }
     ]
     const contextMenu = Menu.buildFromTemplate(item)
 
@@ -61,7 +61,7 @@ app.whenReady().then(() => {
             for (let i = 0; i < 10; i++) {
                 result.push(`v21.4.0`)
             }
-            evt.reply('resCommand', {result, os: process.platform})
+            evt.reply('resCommand', { result, os: process.platform })
             return
         }
 
@@ -76,12 +76,12 @@ app.whenReady().then(() => {
         })
 
         cmd.stdout.on('end', () => {
-            evt.reply('resCommand', {result, os: process.platform})
+            evt.reply('resCommand', { result, os: process.platform })
         })
     })
 
     ipcMain.on('setConfig', (_, config) => {
-        setSchema({config})
+        setSchema({ config })
     })
 
     ipcMain.on('showNotification', (_, param) => new Notification(param).show())

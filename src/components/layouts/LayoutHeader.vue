@@ -92,7 +92,7 @@ function onWinMinimize() {
       style="-webkit-app-region: drag"
     >
       <div>
-        <q-img src="@/assets/img/nvm-desk-logo.png" />
+        <q-img src="@/assets/img/logo.png" />
       </div>
     </q-toolbar>
 
